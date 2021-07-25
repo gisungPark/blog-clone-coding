@@ -4,6 +4,7 @@ import com.web.blog.model.RoleType;
 import com.web.blog.model.User;
 import com.web.blog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -67,9 +68,17 @@ public class DummyControllerTest {
 //        save함수는 id를 전달하면 해당 id에 대한 데이터가 없으면 insert를 해요.
 //        @Transactional 을 달면 save를 하지 않아도 update가 된다!!!(더티 체킹)
 
-        return userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 id는 존재하지 않습니다."));
+        return findUser;
+    }
 
+    @DeleteMapping("/dummy/user/{id}")
+    public String delete(@PathVariable Long id){
+        try {
+            userRepository.deleteById(id);
+        }catch (EmptyResultDataAccessException e){
+            return " 삭제에 실패하였습니다. 해당 id는 DB 에 없습니다.";
+        }
+        return "삭제되었습니다. id: " + id;
     }
 
 

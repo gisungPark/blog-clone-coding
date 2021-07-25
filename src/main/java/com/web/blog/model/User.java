@@ -18,7 +18,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // db에 넘버링 전략을 따라간다.
     private Long id;
 
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false, length = 30, unique = true)
     private String username;
     @Column(nullable = false, length = 100) // 해시 비밀번호 암호화
     private String password;
