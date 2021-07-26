@@ -6,6 +6,7 @@ import com.web.blog.model.User;
 import com.web.blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,8 +27,7 @@ public class UserApiController {
 
     @PostMapping("/auth/join")
     public ResponseDto<Integer> save(@RequestBody User user){
-        System.out.println("UserApicontroller : save 호출됨!");
-        user.setRole(RoleType.USER);
+        System.out.println("UserApiController : save 호출됨!");
 
         userService.save(user);
         return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
