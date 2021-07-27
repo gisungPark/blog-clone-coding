@@ -1,7 +1,10 @@
 package com.web.blog.config;
 
+import com.web.blog.config.auth.PrincipalDetailService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,23 +17,38 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableGlobalMethodSecurity(prePostEnabled = true) // 특정 주소로 접근을 하면 권한 및 인증을 미리 체크하겠다.
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private PrincipalDetailService principalDetailService;
+
+
     @Bean // IoC가 된다.
     public BCryptPasswordEncoder encodePWE(){
         return new BCryptPasswordEncoder();
     }
 
+    // 시큐리티가 대신 로그인해주는데 password를 가로채기 하는데
+    // 해당 password가 뭘로 해쉬가 되어 회원가입이 되었는지 알아야
+    // 같은 해쉬로 암호화해서 DB에 있는 해쉬랑 비교할 수 있음.
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(principalDetailService).passwordEncoder(encodePWE());
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable() // csrf 토큰 비활성화
-                .authorizeRequests()
-                    .antMatchers("/", "/auth/**")
-                    .permitAll();
-//                    .anyRequest()
-//                    .authenticated();
-//                .and()
-//                    .formLogin()
-//                    .loginPage("/auth/join");
+            .csrf().disable() // csrf 토큰 비활성화
+            .authorizeRequests()
+                .antMatchers("/", "/auth/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+            .and()
+                .formLogin()
+                .loginPage("/auth/join")
+                .loginProcessingUrl("/auth/loginProc") // 스프링 시큐리티가 해당 주소로 오는 요청을 가로채서
+                .defaultSuccessUrl("/"); // 대신 로그인
+
     }
 
 
