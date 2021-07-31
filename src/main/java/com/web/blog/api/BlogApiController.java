@@ -12,13 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.security.Principal;
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class BlogApiController {
@@ -37,6 +31,12 @@ public class BlogApiController {
     public ResponseDto<Page<Board>> boardList(@PageableDefault(size = 2, sort = "id", direction = Sort.Direction.DESC) Pageable pageable){
         Page<Board> boards = boardService.boardList(pageable);
         return new ResponseDto<Page<Board>>(HttpStatus.OK.value(), boards);
+    }
+
+    @GetMapping("/api/board/{id}")
+    public ResponseDto<Board> findById(@PathVariable Long id){
+        Board findBoard = boardService.findById(id);
+        return new ResponseDto<Board>(HttpStatus.OK.value(), findBoard);
     }
 
 

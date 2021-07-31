@@ -19,7 +19,15 @@
             <input type="password" class="form-control" placeholder="Enter password" id="pwd">
         </div>
     </form>
-        <button id="save-btn" class="btn btn-primary">회원가입</button>
+        <button type="button" id="btn-save" class="btn btn-primary">회원가입</button>
 </div>
+
+<script>
+    $("#btn-save").on("click", () =>{
+        alert("버튼이 클릭되었습니다.")
+    });
+
+</script>
 <%@ include file="../layout/footer.jsp" %>
+
 

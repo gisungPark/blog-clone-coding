@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BoardService {
@@ -30,4 +31,11 @@ public class BoardService {
 
     }
 
+    @Transactional(readOnly = true)
+    public Board findById(Long id) {
+       return boardRepository.findById(id)
+                .orElseThrow(() -> {
+                    return new IllegalStateException("해당 게시글은 존재하지 않습니다. : " + id);
+                });
+    }
 }
